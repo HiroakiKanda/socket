@@ -1,8 +1,8 @@
 from socket import socket, AF_INET, SOCK_DGRAM
 
 HOST = ''
-PORT = 5000
-ADDRESS = "127.0.0.1" # 自分に送信
+PORT = 8978
+ADDRESS = "172.31.92.113" # 自分に送信
 
 s = socket(AF_INET, SOCK_DGRAM)
 # ブロードキャストする場合は、ADDRESSを
