@@ -1,27 +1,13 @@
-from struct import *
+# -*- coding: utf-8 -*-
+import sys
 
-data = pack('h', 1)
+a = b'\x02\x00\x18\x00\x00\x00\x00\x00\xb6\xbf\x00\x06\x20\xc88982\x00\x00\x00\x00\x00\x00\x03\x00\x00'
 
-#print(type(data))
-#print(data)
+import sys, io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-a = 128
+chars = list(a)
+print(chars)
 
-fmt_app = b'\x01' 
-fmt_spc=b'\x20'
-fmt_app_dat = fmt_spc + fmt_app
-fmt_app_len = len(fmt_app_dat)
-
-#print(fmt_app_dat)
-#print(fmt_app_len)
-#print(fmt_app_len.to_bytes(2,'big'))
-
-# 2バイトでビッグエンディアン
-#print('a=' + a.to_bytes(2, 'big').decode('utf-8') ) 
-
-# 4バイトでリトルエンディアン
-#print(a.to_bytes(4, 'little')  )
-
-message = 'こんにちは、Pythonプログラミング'
-print(bytes(message, 'UTF-8') )
-# messageをUTF-8コードのバイト列に変換(エンコード)する。
+for char in chars:
+    print(char)
