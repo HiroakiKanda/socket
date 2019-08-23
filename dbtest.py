@@ -7,7 +7,6 @@ import cgi
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-sockethost = '172.31.92.113'
 socketdb = 'socket_db'
 socketuser = 'socket_db_u'
 socketpasswd = 'iisadmin'
@@ -37,27 +36,26 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             content_len=int(self.headers.get('content-length'))
+
             requestBody = json.loads(self.rfile.read(content_len).decode('utf-8'))
 
-            searchjson = {}
-            serchsql = ('select * from t_door where user_id = %(user_id)s and door_no = %(door_no)s')
-            searchjson['user_id'] = requestBody['user_id']
-            searchjson['door_no'] = requestBody['door_no']
-            serchresult = selectDb(serchsql, searchjson)
+            #searchjson = {}
+            #serchsql = ('select * from t_door where user_id = %(user_id)s and door_no = %(door_no)s')
+            #searchjson['user_id'] = requestBody['user_id']
+            #searchjson['door_no'] = requestBody['door_no']
+            #serchresult = selectDb(serchsql, searchjson)
 
-            #insertjson = {}
-            #insertsql = ('insert into t_door (user_id, door_no, command, status) values(%(user_id)s, %(door_no)s, %(status)s, %(command)s)')
-            #insertjson['user_id'] = requestBody['user_id']
-            #insertjson['door_no'] = requestBody['door_no']
-            #insertjson['command'] = requestBody['command']
-            #insertjson['status'] = requestBody['status']
-            #print(insertsql)
-            #print(insertjson)
-            #execDb(insertsql,insertjson)
+            insertjson = {}
+            insertsql = ('insert into t_door (user_id, door_no, status) values(%(user_id)s, %(door_no)s, %(status)s)')
+            insertjson['user_id'] = requestBody['user_id']
+            insertjson['door_no'] = requestBody['door_no']
+            insertjson['status'] = requestBody['status']
+            print(insertsql)
+            print(insertjson)
+            execDb(insertsql,insertjson)
 
             #updatejson = {}
-            #updatesql = ('update t_door set command = %(command)s, status = %(status)s  where user_id = %(user_id)s and door_no = %(door_no)s')
-            #updatejson['command'] = requestBody['command']
+            #updatesql = ('update t_door set status = %(status)s  where user_id = %(user_id)s and door_no = %(door_no)s')
             #updatejson['status'] = requestBody['status']
             #updatejson['user_id'] = requestBody['user_id']
             #updatejson['door_no'] = requestBody['door_no']
@@ -68,7 +66,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 res[key] = requestBody[key]
 
             response = { 'status' : 200,
-                         'serchresult' : serchresult,
+                         #'serchresult' : serchresult,
                          'result' : res
                         }
             self.send_response(200)
@@ -105,7 +103,7 @@ def importargs():
 
 def run(server_class=HTTPServer, handler_class=MyHandler, server_name='localhost', port=8080):
 
-    server = server_class((server_name, port), handler_class)
+    server = server_class(('', port), handler_class)
     server.serve_forever()
 
 def main():
