@@ -39,36 +39,17 @@ class MyHandler(BaseHTTPRequestHandler):
 
             requestBody = json.loads(self.rfile.read(content_len).decode('utf-8'))
 
-            #searchjson = {}
-            #serchsql = ('select * from t_door where user_id = %(user_id)s and door_no = %(door_no)s')
-            #searchjson['user_id'] = requestBody['user_id']
-            #searchjson['door_no'] = requestBody['door_no']
-            #serchresult = selectDb(serchsql, searchjson)
-
             insertjson = {}
-            insertsql = ('insert into t_door (user_id, door_no, status) values(%(user_id)s, %(door_no)s, %(status)s)')
+            insertsql = ('insert into t_door (user_id, door_no, status) values(%(user_id)s, %(door_no)s, "0")')
             insertjson['user_id'] = requestBody['user_id']
             insertjson['door_no'] = requestBody['door_no']
-            insertjson['status'] = requestBody['status']
-            print(insertsql)
-            print(insertjson)
             execDb(insertsql,insertjson)
-
-            #updatejson = {}
-            #updatesql = ('update t_door set status = %(status)s  where user_id = %(user_id)s and door_no = %(door_no)s')
-            #updatejson['status'] = requestBody['status']
-            #updatejson['user_id'] = requestBody['user_id']
-            #updatejson['door_no'] = requestBody['door_no']
-            #execDb(updatesql,updatejson)
 
             res = {}
             for key in requestBody:
                 res[key] = requestBody[key]
 
-            response = { 'status' : 200,
-                         #'serchresult' : serchresult,
-                         'result' : res
-                        }
+            response = { 'status' : 200 }
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
@@ -81,8 +62,7 @@ class MyHandler(BaseHTTPRequestHandler):
             print(type(e))
             print(e.args)
             print(e)
-            response = { 'status' : 500,
-                         'msg' : 'An error occured' }
+            response = { 'status' : 500 }
 
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
