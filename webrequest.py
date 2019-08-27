@@ -91,5 +91,5 @@ def main():
 
 if __name__ == '__main__':
     formatter = '%(levelname)s : %(asctime)s : %(message)s'
-    logging.basicConfig(filename='dbtest.log', level=logging.INFO, format=formatter)
+    logging.basicConfig(filename='webrequest.log', level=logging.INFO, format=formatter)
     main()
