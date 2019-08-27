@@ -1,7 +1,8 @@
 # -*- coding:utf-8 -*-
 ### -----------------------------------------------------------------------------------------------
 #
-#       処理概要        ： TCP Socket
+#       処理概要        ： TCP Socket通信
+#			： ポートにより通信する扉がきまっている
 #       パラメータ      ：
 #       作成者          ： IIS H.Kanda
 #       作成日          ： 2019/08
@@ -11,6 +12,7 @@ import socket
 import datetime
 import time
 import logging
+import sys
 
 from importdir import disassemble
 from importdir import db
@@ -123,8 +125,8 @@ if __name__=='__main__':
 
 	### ログ設定
 	formatter = '%(levelname)s : %(asctime)s : %(message)s'
-	#logging.basicConfig(filename='socket8983.log', level=logging.DEBUG, format=formatter)
-	logging.basicConfig(level=logging.INFO, format=formatter)
+	logging.basicConfig(filename='socket8983.log', level=logging.INFO, format=formatter)
+	#logging.basicConfig(level=logging.INFO, format=formatter)
 	
 	### SQL作成	
 	sel_dat = "select user_id from t_door"
@@ -139,7 +141,7 @@ if __name__=='__main__':
 	### 接続通知
 	send_dat = make_fmt(1, None)
 	logging.info('起動通知 send->' )
-	logging.info(send_dat)
+	logging.debug(send_dat)
 	serial_no_cnt()
 	mysock.mysend(send_dat)
 
@@ -147,7 +149,7 @@ if __name__=='__main__':
 	time.sleep(3)
 	recv_dat = disassemble.disassemble(mysock.myreceive())
 	for member in recv_dat:
-		logging.info('recv シリアルNo:' + str(member.serialno) + 'アプリデータ:' + str(member.appdata))
+		logging.info('recv シリアルNo:' + str(member.serialno) + ' アプリデータ:' + str(member.appdata))
 
 	#インターバル時間設定
 	previous_time = datetime.datetime.now()
@@ -167,15 +169,14 @@ if __name__=='__main__':
 				### 通信保持
 				send_dat = make_fmt(0, None)
 				logging.info('通信保持 send->' )
-				logging.info(send_dat)
+				logging.debug(send_dat)
 				serial_no_cnt()
 				mysock.mysend(send_dat)
 
 				time.sleep(0.5)
 				recv_dat = disassemble.disassemble(mysock.myreceive())
 				for member in recv_dat:
-                			logging.info('recv シリアルNo:' + str(member.serialno) + 'アプリデータ:' + str(member.appdata))	
-					#member.print_value()
+					logging.info('recv シリアルNo:' + str(member.serialno) + ' アプリデータ:' + str(member.appdata))	
 			else:
 				recv_dbs = db.selectDb(sel_dat)
 				if len(recv_dbs) >=1:
@@ -184,14 +185,26 @@ if __name__=='__main__':
 						### 認証要求
 						send_dat = make_fmt(3, recv_db[0])
 						logging.info('認証要求 send->' + recv_db[0])
-						logging.info(send_dat)
+						logging.debug(send_dat)
 						serial_no_cnt()
 						mysock.mysend(send_dat)
 				
 						time.sleep(0.5)
 						recv_dat = disassemble.disassemble(mysock.myreceive())
 						for member in recv_dat:
-                					logging.info('recv シリアルNo:' + str(member.serialno) + 'アプリデータ:' + str(member.appdata))	
+							logging.info('recv シリアルNo:' + str(member.serialno) + ' アプリデータ:' + str(member.appdata))	
+							app_array = disassemble.apdat_disassemble(member.appdata)
+							if app_array[0] == b'e':
+								logging.info('状態通知')
+							elif app_array[0] == b'\x03':
+								str_key=''
+								if app_array[1] == b'\x00':
+									for i in range(8):
+										str_key = str_key + app_array[i+2].decode('utf-8')
+									logging.info('認証結果-> OK ' + str_key)
+								elif app_array[1] == b'\x01':
+									logging.info('認証結果-> NG ' + app_array[2].hex())
+
 
 						### 処理後SQL
 						del_dat = "delete from t_door where user_id='"
@@ -201,14 +214,14 @@ if __name__=='__main__':
 						logging.info(del_dat)	
 						db.execDb(del_dat)
 
-				#else:
-				#	recv_dat = disassemble.disassemble(mysock.myreceive())
-				#	for member in recv_dat:
-				#		member.print_value()
 	
 		except socket.error as e:
 			logging.error ('Socket Error: %s' % e)
 			continue	
 		except Exception as e:
 			logging.error ('Error: %s' % e)
-	mysock.close()
+		except KeyboardInterrupt:
+			#強制終了を検知したらTCPソケットを閉じて終了
+			mysock.close()
+			sys.exit()
+

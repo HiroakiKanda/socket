@@ -79,3 +79,13 @@ def disassemble(data):
 
 	return returnarray
 
+def apdat_disassemble(data):
+
+	#データを全て分割して配列にする
+	disassembledata = regex.split(b"",data, flags=regex.VERSION1)
+	array=[]
+	#最初と最後の'を消した配列を作成
+	for item in disassembledata:
+		if(len(item) > 0):
+			array.append(item)
+	return array
