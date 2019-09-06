@@ -1,0 +1,14 @@
+INFO : 2019-08-27 17:41:26,204 : b'\x02\x00\x18\x00\x00\x00\x00\x00\xa55\x00\n \xc889828983\x00\x00\x03\x00\x00'
+INFO : 2019-08-27 17:41:26,704 : recv シリアルNo:b'\xa55'アプリデータ:b'\xc889828983'
+INFO : 2019-08-27 17:41:26,704 : 8982
+INFO : 2019-08-27 17:41:26,704 : tcpsock8982.py
+INFO : 2019-08-27 17:41:26,709 : check_call() result: 0
+INFO : 2019-08-27 17:41:26,709 : ['python3', 'tcpsock8982.py']
+INFO : 2019-08-27 17:41:26,709 : Popen() result: <subprocess.Popen object at 0x7f2b2d46c400>
+INFO : 2019-08-27 17:41:36,205 : b'\x02\x00\x18\x00\x00\x00\x00\x00\xa5D\x00\x06 \xc88983\x00\x00\x00\x00\x00\x00\x03\x00\x00'
+INFO : 2019-08-27 17:41:36,706 : recv シリアルNo:b'\xa5D'アプリデータ:b'\xc88983'
+INFO : 2019-08-27 17:41:36,706 : 8983
+INFO : 2019-08-27 17:41:36,706 : tcpsock8983.py
+INFO : 2019-08-27 17:41:36,711 : subprocess.subprocess.check_call() failed
+INFO : 2019-08-27 17:41:36,711 : ['python3', 'tcpsock8983.py']
+INFO : 2019-08-27 17:41:36,711 : Popen() result: <subprocess.Popen object at 0x7f2b2d466d30>

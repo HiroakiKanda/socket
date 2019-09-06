@@ -1,1 +1,0 @@
-curl --noproxy localhost -X POST -d "{ \"1st\" : \"100\", \"2nd\" : 77, \"3rd\" : 60 }"  http://localhost:8080
